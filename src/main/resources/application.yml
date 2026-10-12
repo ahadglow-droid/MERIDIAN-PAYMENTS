@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: meridian-payments-recovery
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/meridian_payments}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+      continue-on-error: true
+
+server:
+  port: ${PORT:8085}
+
+recovery:
+  max-retries: 3
+  scanner:
+    enabled: true
+    fixed-delay-ms: 60000
+    initial-delay-ms: 10000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  level:
+    root: INFO
+    com.meridian.payments: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: WARN
